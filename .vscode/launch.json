@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "main.java.Main",
+            "projectName": "BasicSystemDesign_cb50696d"
+        },
+        {
+            "type": "java",
             "name": "Attach to Remote Program",
             "request": "attach",
             "hostName": "<The host name or ip address of remote debuggee>",

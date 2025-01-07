@@ -1,3 +1,4 @@
+package main.java;
 /*
  * This is a simple Java program.
  * The program will mimmick a simple system
@@ -26,7 +27,7 @@ import java.util.Scanner;
 public class Main {
     private static final String INVALID_INPUT_MESSAGE = "Invalid input. ";
     private static final String FILE_PATH = "users.ser";
-    private HashMap<String, User> users;
+    public HashMap<String, User> users;
     private static final String HELP_MESSAGE = "Enter 1 to register, 2 to login, 3 to delete, 4 to update user details, 5 to exit";
     private static Logger log;
 
