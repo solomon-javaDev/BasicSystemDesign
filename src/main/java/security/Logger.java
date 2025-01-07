@@ -1,5 +1,6 @@
-package main.java;
+package main.java.security;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,6 +27,13 @@ public class Logger {
              PrintWriter pw = new PrintWriter(fw)) {
             pw.println(timestamp + " " + message);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileEncryptor.encryptFile(LOG_FILE, LOG_FILE + ".enc");
+            new File(LOG_FILE).delete();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

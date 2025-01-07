@@ -11,11 +11,10 @@ import org.junit.jupiter.api.Test;
 import main.java.Main;
 
 public class MainTest {
-    @SuppressWarnings("unused")
     private Main main;
 
     @BeforeEach
-    void setUp(){
+    void setUp() throws Exception{
         main = new Main();
     }
 
@@ -28,6 +27,7 @@ public class MainTest {
 
         assertNotEquals("Solomon", main.users.get("Bakka").getPassword(),"Password should be hashed");
     }
+
 
     
 }

@@ -22,6 +22,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
+import main.java.security.FileEncryptor;
+import main.java.security.Logger;
+import main.java.security.PasswordHasher;
+
 import java.util.Scanner;
 
 public class Main {
@@ -32,9 +37,9 @@ public class Main {
     private static Logger log;
 
 
-    public Main() {
-        users = loadUsers();
+    public Main() throws Exception {
         log = new Logger();
+        users = loadUsers();
         printUsernames();
             }   
      
@@ -49,8 +54,15 @@ public class Main {
      * Load users from file
      * 
      * @return
-     */
-        private HashMap<String, User> loadUsers() {
+    * @throws Exception 
+    */
+      private HashMap<String, User> loadUsers() throws Exception {
+        try{
+            FileEncryptor.decrypt(FILE_PATH+".enc", FILE_PATH);
+            log.logInfo("The file has been decrypted! ");
+        }catch(Exception e){
+            log.logError("An error occurred while decrypting the file! "+e.getMessage());
+        }
             // Load users from file 
             //Deserialize the file
                 try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(FILE_PATH)))) {
@@ -59,6 +71,7 @@ public class Main {
                     log.logInfo("Users have been loaded! "+users.toString());
                     return users;
                 } catch (Exception e) {
+                    log.logError("Problem loading users! "+e.getMessage());
                     return new HashMap<String, User>();
                 }
             
@@ -131,6 +144,11 @@ public class Main {
         // Register a user
         System.out.println("Enter your username: ");
         String username = scanner.nextLine();
+        if(users.containsKey(username)){
+            System.out.println("Username already exists. Please choose another username");
+            log.logWarning("The user tried to register an existing username! "+username);
+            
+        }   else{
         System.out.println("Enter your password: ");
         String password = scanner.nextLine();
         User user = new User(username, password);
@@ -138,23 +156,9 @@ public class Main {
         users.put(user.getUsername(), user);
         log.logInfo("The system has registered a new user! "+user.getUsername());
         saveUsers();
-
+        }
             }
         
-    // private void saveUser(User user) {
-    //     // Save a user
-    //     users.put(user.getUsername(), user);
-    //     try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))){
-    //         oos.writeObject(users);
-    //         saveUsers();
-    //         System.out.println("User saved successfully");
-    //         log.logInfo("The system has saved a user! ");
-    //     } catch (Exception e) {
-    //         e.printStackTrace();
-    //         log.logInfo("The system has failed to save a user! ");
-
-    //     }
-    //  }
      
     private void saveUsers() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
@@ -163,7 +167,13 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
             log.logError("An error occurred while saving the list of users! ");
-
+        }
+        try{
+            FileEncryptor.encryptFile(FILE_PATH, FILE_PATH+".enc");
+            new File(FILE_PATH).delete();
+            log.logInfo("The file has been encrypted and the original file deleted! ");
+        }catch(Exception e){
+            log.logError("An error occurred while encrypting the file! "+e.getMessage());
         }
     }
         
@@ -177,8 +187,14 @@ public class Main {
     System.out.println("Enter your username: ");
     String username = scanner.nextLine();
     System.out.println("Enter your password: ");
-    String password = scanner.nextLine();
+    String password = PasswordHasher.hashPassword(scanner.nextLine());
     
+    if(users.get(username).isLocked()){
+        System.out.println("Account is locked. Contact the admin");
+        log.logWarning("A user tried to login to a locked account! "+username);
+        return;
+    }
+
     while (attempts < 3) {
         User user = users.get(username);
         if (user != null && user.getPassword().equals(password)) {
@@ -194,6 +210,8 @@ public class Main {
                 System.out.println("Enter your password: ");
                 password = scanner.nextLine();
             } else {
+                user.setLocked(true);
+
                 System.out.println("Invalid username or password. No attempts remaining.");
                 log.logInfo("A user's attempts are done. Account locked! "+user.getUsername());
             }
@@ -237,6 +255,39 @@ public class Main {
     
     public void updateUser(Scanner scanner){
 
+        System.out.println("Enter your username: ");
+        String username = scanner.nextLine();
+        System.out.println("Enter your password: ");
+        String password = scanner.nextLine();
+        User user = new User(username, password);
+        boolean isPresent = users.containsKey(user.getUsername());
+    
+        if (isPresent) {
+            System.out.println("Are you sure you want to update " + user.getUsername() + "'s account? This process is undoable. (Yes/No)");
+            String confirmation = scanner.nextLine();
+            if (confirmation.equalsIgnoreCase("Yes")) {
+                log.logInfo("A user has been updated! "+user.getUsername());
+                users.remove(user.getUsername());
+                System.out.println("Enter your new password: ");
+                String newPassword = scanner.nextLine();
+                user.setPassword(newPassword);
+                user.setPassword(PasswordHasher.hashPassword(user.getPassword()));
+                users.put(user.getUsername(), user);
+                saveUsers();
+                System.out.println("User updated! Users list is updated.");
+                log.logInfo("A user's password has been updated! "+user.getUsername());
+            } else if (confirmation.equalsIgnoreCase("No")) {
+                System.out.println("Operation stopped!!");
+                log.logWarning("A user has stopped operation to update an account "+user.getUsername());
+            } else {
+                System.out.println(INVALID_INPUT_MESSAGE);
+                log.logError("A user tried to update a non existent account! ");
+
+            }
+        } else {
+            System.out.println("User not found.");
+            log.logError("No user was found for account");
+        }
     }
 
 }
