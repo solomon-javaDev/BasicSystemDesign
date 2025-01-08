@@ -46,7 +46,7 @@ public class FileEncryptor {
 
         try(
             FileInputStream fis = new FileInputStream(inputFile);
-            FileOutputStream fos = new FileOutputStream(outputFile);
+            FileOutputStream fos = new FileOutputStream(outputFile, true);
         ){
             byte[] inputBytes = fis.readAllBytes();
             byte[] outputBytes = cipher.doFinal(inputBytes);
@@ -67,7 +67,7 @@ public class FileEncryptor {
 
         try(
             FileInputStream fis = new FileInputStream(inputFile);
-            FileOutputStream fos = new FileOutputStream(outputFile);
+            FileOutputStream fos = new FileOutputStream(outputFile, true); // 'true' to append to the file
         ){
             byte[] inputBytes = fis.readAllBytes();
             byte[] outputBytes = cipher.doFinal(inputBytes);

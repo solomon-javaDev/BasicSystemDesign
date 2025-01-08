@@ -9,6 +9,13 @@
             "name": "Main",
             "request": "launch",
             "mainClass": "main.java.Main",
+            "projectName": "BasicSystemDesign_c40a40f2"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "main.java.Main",
             "projectName": "BasicSystemDesign_cb50696d"
         },
         {

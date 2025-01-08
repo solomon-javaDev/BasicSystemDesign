@@ -1,6 +1,5 @@
 package main.java.security;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,6 +8,8 @@ import java.util.Date;
 
 public class Logger {
     private static final String LOG_FILE = "system.log";
+    private static final String LOG_FILE_ENC = "system.log.enc";
+    private static final String LOG_FILE_DEC = "system.log.dec";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     public enum LogLevel {
@@ -31,9 +32,17 @@ public class Logger {
         }
         try {
             FileEncryptor.encryptFile(LOG_FILE, LOG_FILE + ".enc");
-            new File(LOG_FILE).delete();
-
+            // new File(LOG_FILE).delete();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showLogs(){
+        try{
+            FileEncryptor.decrypt(LOG_FILE_ENC, LOG_FILE_DEC);
+
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
