@@ -1,18 +1,37 @@
-## Getting Started
+## Basic System Design
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+### Overview
+This project demonstrates a basic system design using Java. It includes fundamental components and interactions to showcase a simple yet effective architecture.
 
-## Folder Structure
+### Features
+- User authentication
+- Data processing
+- Error handling
+- Logging
 
-The workspace contains two folders by default, where:
+### How to Use
+1. **Clone the repository**:
+    ```sh
+    git clone <repository-url>
+    ```
+2. **Navigate to the project directory**:
+    ```sh
+    cd BasicSystemDesign
+    ```
+3. **Compile the project**:
+    ```sh
+    javac -d bin src/*.java
+    ```
+4. **Run the application**:
+    ```sh
+    java -cp bin Main
+    ```
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+### Requirements
+- Java Development Kit (JDK) 8 or higher
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+### Contributing
+Feel free to fork this project, make improvements, and submit pull requests.
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+### License
+This project is licensed under the MIT License.
